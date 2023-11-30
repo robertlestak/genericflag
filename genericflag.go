@@ -27,6 +27,13 @@ func NewFlagSet(name string) *FlagSet {
 	}
 }
 
+func quoteValWithSpaces(val string) string {
+	if strings.Contains(val, " ") && !strings.HasPrefix(val, "\"") && !strings.HasPrefix(val, "'") {
+		val = "\"" + val + "\""
+	}
+	return val
+}
+
 // Parse loops through all of the args and parses them into flags
 // if an Expected slice is provided, then only flags in that slice will be parsed
 // and the remainder will be added to the args slice
@@ -74,9 +81,13 @@ func (f *FlagSet) Parse(args []string) error {
 		if !toParse {
 			f.args = append(f.args, arg)
 			if flagVal != "" && !strings.Contains(arg, flagVal) {
+				// if the value has spaces in it and it's not already quoted, then quote it
+				flagVal = quoteValWithSpaces(flagVal)
 				f.args = append(f.args, flagVal)
 			}
 			continue
+		} else {
+			flagVal = quoteValWithSpaces(flagVal)
 		}
 		f.Flags[flagName] = append(f.Flags[flagName], flagVal)
 	}
