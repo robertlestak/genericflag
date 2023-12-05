@@ -81,7 +81,6 @@ func (f *FlagSet) Parse(args []string) error {
 		if !toParse {
 			f.args = append(f.args, arg)
 			if flagVal != "" && !strings.Contains(arg, flagVal) {
-				// if the value has spaces in it and it's not already quoted, then quote it
 				flagVal = quoteValWithSpaces(flagVal)
 				f.args = append(f.args, flagVal)
 			}
